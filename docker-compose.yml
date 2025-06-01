@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  date-range-parser:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - TZ=UTC
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+    networks:
+      - date-range-net
+
+networks:
+  date-range-net:
+    driver: bridge
