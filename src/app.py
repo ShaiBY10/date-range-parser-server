@@ -1,13 +1,22 @@
+import os
+import sys
+
+# Add src directory to Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+
 from flask import Flask, request, jsonify
 from parsers.date_range_parser import DateRangeParser
 from utils.timezone_helper import get_timezone_offset, convert_to_timezone
 import pytz
 from datetime import datetime, timedelta
 import logging
-import os
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
+# Configure logging for production
+log_level = logging.DEBUG if os.environ.get('DEBUG', 'False').lower() == 'true' else logging.INFO
+logging.basicConfig(
+    level=log_level,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
@@ -134,4 +143,6 @@ if __name__ == '__main__':
     debug = os.environ.get('DEBUG', 'False').lower() == 'true'
     
     logger.info(f"Starting Date Range Parser Server on port {port}")
+    logger.info(f"Debug mode: {debug}")
+    
     app.run(host='0.0.0.0', port=port, debug=debug)
